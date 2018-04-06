@@ -1,7 +1,7 @@
 Group Name: *Team Alpha*
 </br>Collaborators on this Project:
 </br>&nbsp;&nbsp;Christine Breckenridge, Aleksandr Brodskiy, Carlos Martinez
-    <pre>**$** git clone https://github.com/Aleksandr-Brodskiy/roboticsFinalProject.git     
+    <pre>**$** git clone https://github.com/Aleksandr-Brodskiy/final.git     
     **$** cd roboticsFinalProject
     **//** **set up the environment**
     </br> > all **PR**'s are to be established on separate branches and merges to **master** will be at the discretion of the group
