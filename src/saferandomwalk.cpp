@@ -12,7 +12,7 @@ int counter = 0;
 void readSensor(const sensor_msgs::LaserScan&msg){
 	int num = 0;
     for (int i = 0; i < (msg.ranges.size() - 1); i++){
-        if (msg.ranges[i] < 0.4){
+        if (msg.ranges[i] < 0.25){
 		num++;
 		if(num > 3){
 			//more than one range is close so it shouldnt be random data
