@@ -10,7 +10,8 @@ void cameraMessageReceived(const logical_camera_plugin::logicalImage&msg) {
 	treasures[msg.modelName] = msg;
 	if(treasure_count != treasures.size()) {//found a new treasure
 		treasure_count = treasures.size();
-		ROS_INFO_STREAM("Found a new treasure");
+		
+		ROS_INFO_STREAM("Found " << treasure_count << " treasure(s)");
 		ROS_INFO_STREAM(msg);	
 	}
 }
