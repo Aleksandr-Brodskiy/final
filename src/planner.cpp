@@ -3,6 +3,7 @@
 #include <iostream>
 #include <nav_msgs/OccupancyGrid.h>
 #include <geometry_msgs/Pose.h>
+#include <iterator>
 
 std::vector<int8_t> data (1,0);
 unsigned int height = 0;
@@ -16,19 +17,22 @@ int dist = 1;
 
 
 void mapReceived(const nav_msgs::OccupancyGrid&msg) {
-	ROS_INFO_STREAM("received map");
-	int length = ((sizeof(msg.data))/(sizeof(msg.data[0])));
-	data.resize(length);
 
-	for (int c = 0; c < length; c++) 
-	{
-		data.push_back(msg.data[c]);	
-	}       
+	       
 	height = msg.info.height;
 	width = msg.info.width;
 	resolution = msg.info.resolution;
 	origin = msg.info.origin;
+	int length = height*width;
+
+	data.resize(length);
+	for (int c = 0; c < length; c++) 
+	{
+		data.push_back(msg.data[c]);	
+	}
 	ROS_INFO_STREAM(origin);
+	ROS_INFO_STREAM("received map of height " << height << " width " << width << " length " << length);
+	//ROS_INFO_STREAM(msg);
 }
 
 int main(int argc, char** argv)
@@ -53,11 +57,13 @@ int main(int argc, char** argv)
 				count = 0;
 			
 			if(resolution*count >= dist) {
-				pose.x = i%width;
-				pose.y = ceil(i/width);
-				//send.publish(pose);
+				pose.x = (i%width)*resolution + origin.position.x;
+				pose.y = (ceil(i/width))*resolution + origin.position.y;
+				pose.theta = 0;
+				send.publish(pose);
+				//ROS_INFO_STREAM("Publishing pose: " << pose);
 			}
-			
+			i++;
 			
 		}
 		ros::spinOnce();
