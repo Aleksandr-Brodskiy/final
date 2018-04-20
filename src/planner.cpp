@@ -28,7 +28,9 @@ void mapReceived(const nav_msgs::OccupancyGrid&msg) {
 	data.resize(length);
 	for (int c = 0; c < length; c++) 
 	{
-		data.push_back(msg.data[c]);	
+		data[c] = msg.data[c];
+		//if(msg.data[c] == -1)
+			//ROS_INFO_STREAM("data[" << c << "]=" << (int)msg.data[c]);	
 	}
 	ROS_INFO_STREAM(origin);
 	ROS_INFO_STREAM("received map of height " << height << " width " << width << " length " << length);
@@ -48,8 +50,10 @@ int main(int argc, char** argv)
 
 	while (ros::ok)
 	{
-		while(data[i] != 0) //find first clear pixel
+		while(data[i] == -1) //find first clear pixel
 			i++;
+		//ROS_INFO_STREAM("i: " << i);
+		//ROS_INFO_STREAM("data["<<i<<"]: " << (int)data[i]);
 		while(i < height*width) {
 			if(data[i] == 0) //find a number of clear pixels in a row
 				count++;	
@@ -57,11 +61,14 @@ int main(int argc, char** argv)
 				count = 0;
 			
 			if(resolution*count >= dist) {
+				//ROS_INFO_STREAM("i: " << i);
+				//ROS_INFO_STREAM("data["<<i<<"]: " << data[i]);
 				pose.x = (i%width)*resolution + origin.position.x;
 				pose.y = (ceil(i/width))*resolution + origin.position.y;
 				pose.theta = 0;
 				send.publish(pose);
-				//ROS_INFO_STREAM("Publishing pose: " << pose);
+				ROS_INFO_STREAM("Publishing pose: " << pose);
+				//break;
 			}
 			i++;
 			
