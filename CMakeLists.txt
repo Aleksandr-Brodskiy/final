@@ -13,13 +13,13 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package()
 include_directories(  ${catkin_INCLUDE_DIRS})
 
-#add_executable(nav src/nav.cpp)
+add_executable(nav src/nav.cpp)
 #add_executable(treasures src/treasures.cpp)
 add_executable(saferandomwalk src/saferandomwalk.cpp)
+add_executable(planner src/planner.cpp)
 
-
-
-#target_link_libraries(nav ${catkin_LIBRARIES})
+target_link_libraries(nav ${catkin_LIBRARIES})
 #target_link_libraries(treasures ${catkin_LIBRARIES})
 target_link_libraries(saferandomwalk ${catkin_LIBRARIES})
+target_link_libraries(planner ${catkin_LIBRARIES})
 

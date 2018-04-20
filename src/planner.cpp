@@ -4,11 +4,11 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <geometry_msgs/Pose.h>
 
-int8[] data;
+std::vector<int8_t> data (1,0);
 unsigned int height = 0;
 unsigned int width = 0;
 float resolution = 0;
-geometry_msg::Pose origin;
+geometry_msgs::Pose origin;
 
 int path_count = 0;
 int dist = 1;
@@ -16,11 +16,19 @@ int dist = 1;
 
 
 void mapReceived(const nav_msgs::OccupancyGrid&msg) {
-        data = msg.data;
+	ROS_INFO_STREAM("received map");
+	int length = ((sizeof(msg.data))/(sizeof(msg.data[0])));
+	data.resize(length);
+
+	for (int c = 0; c < length; c++) 
+	{
+		data.push_back(msg.data[c]);	
+	}       
 	height = msg.info.height;
 	width = msg.info.width;
 	resolution = msg.info.resolution;
 	origin = msg.info.origin;
+	ROS_INFO_STREAM(origin);
 }
 
 int main(int argc, char** argv)
@@ -47,12 +55,12 @@ int main(int argc, char** argv)
 			if(resolution*count >= dist) {
 				pose.x = i%width;
 				pose.y = ceil(i/width);
-				send.publish(pose);
+				//send.publish(pose);
 			}
 			
 			
 		}
-
+		ros::spinOnce();
 
 	}
 }
