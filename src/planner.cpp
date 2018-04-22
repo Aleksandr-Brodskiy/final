@@ -5,7 +5,8 @@
 #include <geometry_msgs/Pose.h>
 #include <iterator>
 
-std::vector<int8_t> data (1,0);
+//std::vector<int8_t> data (1,0);
+int8_t** data = {0};
 unsigned int height = 0;
 unsigned int width = 0;
 float resolution = 0;
@@ -25,12 +26,16 @@ void mapReceived(const nav_msgs::OccupancyGrid&msg) {
 	origin = msg.info.origin;
 	int length = height*width;
 
-	data.resize(length);
-	for (int c = 0; c < length; c++) 
-	{
-		data[c] = msg.data[c];
-		//if(msg.data[c] == -1)
-			//ROS_INFO_STREAM("data[" << c << "]=" << (int)msg.data[c]);	
+	//data.resize(length);
+	data = (int8_t**)malloc(sizeof(int8_t)*height);
+	data[0] = (int8_t*)malloc(sizeof(int8_t)*width);
+
+	for (int i = 0; i < width; i++) {
+		for(int j = 0; j < length; j++) {
+			data[i][j] = msg.data[i+j*width];
+			//if(msg.data[c] == -1)
+				//ROS_INFO_STREAM("data[" << c << "]=" << (int)msg.data[c]);	
+		}
 	}
 	ROS_INFO_STREAM(origin);
 	ROS_INFO_STREAM("received map of height " << height << " width " << width << " length " << length);
@@ -50,7 +55,7 @@ int main(int argc, char** argv)
 
 	while (ros::ok)
 	{
-		while(data[i] == -1) //find first clear pixel
+		/*while(data[i] == -1) //find first clear pixel
 			i++;
 		//ROS_INFO_STREAM("i: " << i);
 		//ROS_INFO_STREAM("data["<<i<<"]: " << (int)data[i]);
@@ -64,7 +69,7 @@ int main(int argc, char** argv)
 				//ROS_INFO_STREAM("i: " << i);
 				//ROS_INFO_STREAM("data["<<i<<"]: " << data[i]);
 				pose.x = (i%width)*resolution + origin.position.x;
-				pose.y = (ceil(i/width))*resolution + origin.position.y;
+				pose.y = 8;//(floor(i/width))*resolution + origin.position.y;
 				pose.theta = 0;
 				send.publish(pose);
 				ROS_INFO_STREAM("Publishing pose: " << pose);
@@ -72,7 +77,8 @@ int main(int argc, char** argv)
 			}
 			i++;
 			
-		}
+		}*/
+		
 		ros::spinOnce();
 
 	}

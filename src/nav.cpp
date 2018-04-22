@@ -60,6 +60,7 @@ int main(int argc,char ** argv) {
     	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
 	goal.target_pose.pose.orientation = q;
     	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
+	ac.waitForResult();
 	while(ros::ok()) {
 		if(ac.waitForResult()){
 			while(!newGoal)
