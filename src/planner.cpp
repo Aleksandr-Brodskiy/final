@@ -6,7 +6,7 @@
 #include <iterator>
 
 //std::vector<int8_t> data (1,0);
-int8_t** data = {0};
+int8_t data[800][800] = {0};
 unsigned int height = 0;
 unsigned int width = 0;
 float resolution = 0;
@@ -14,6 +14,7 @@ geometry_msgs::Pose origin;
 
 int path_count = 0;
 int dist = 1;
+bool first = true;
 
 
 
@@ -26,15 +27,10 @@ void mapReceived(const nav_msgs::OccupancyGrid&msg) {
 	origin = msg.info.origin;
 	int length = height*width;
 
-	//data.resize(length);
-	data = (int8_t**)malloc(sizeof(int8_t)*height);
-	data[0] = (int8_t*)malloc(sizeof(int8_t)*width);
-
-	for (int i = 0; i < width; i++) {
-		for(int j = 0; j < length; j++) {
-			data[i][j] = msg.data[i+j*width];
-			//if(msg.data[c] == -1)
-				//ROS_INFO_STREAM("data[" << c << "]=" << (int)msg.data[c]);	
+	for (int i = 0; i < height; i++) {
+		for(int j = 0; j < width; j++) {
+			data[i][j] = msg.data[i*width+j];
+			//ROS_INFO_STREAM("data[" << i*width+j << "]=" << (int)msg.data[i*width+j]);	
 		}
 	}
 	ROS_INFO_STREAM(origin);
@@ -50,34 +46,56 @@ int main(int argc, char** argv)
 	ros::Subscriber subPose = nh.subscribe("map",1000,mapReceived);
 
 	geometry_msgs::Pose2D pose;
-	int i = 0;
-	int count = 0;
+	int row_count = 0;
+	int col_count = 0;
 
-	while (ros::ok)
-	{
-		/*while(data[i] == -1) //find first clear pixel
-			i++;
-		//ROS_INFO_STREAM("i: " << i);
-		//ROS_INFO_STREAM("data["<<i<<"]: " << (int)data[i]);
-		while(i < height*width) {
-			if(data[i] == 0) //find a number of clear pixels in a row
-				count++;	
-			else
-				count = 0;
-			
-			if(resolution*count >= dist) {
-				//ROS_INFO_STREAM("i: " << i);
-				//ROS_INFO_STREAM("data["<<i<<"]: " << data[i]);
-				pose.x = (i%width)*resolution + origin.position.x;
-				pose.y = 8;//(floor(i/width))*resolution + origin.position.y;
-				pose.theta = 0;
-				send.publish(pose);
-				ROS_INFO_STREAM("Publishing pose: " << pose);
-				//break;
+	while (ros::ok) {
+		for(int i = 0; i < height; i++) {
+			if(i%2 == 0) {
+				for(int j = 0; j < width; j++) {
+					int row = i;
+					while(row >= 0 && data[row][j] == 0) {
+						row--;
+						row_count++;
+					}
+					if(row_count*resolution >= dist && col_count*resolution >= dist) {
+						//send point
+						pose.x = j*resolution + origin.position.x;
+						pose.y = i*resolution + origin.position.y;
+						pose.theta = 0;
+						if(first) {
+						send.publish(pose);
+						first = false;
+						}
+						ROS_INFO_STREAM("Publishing pose: " << pose);
+						col_count = 0;
+					} else if(data[i][j] == 0)
+						col_count++;
+					else
+						col_count = 0;
+				}
+			} else {
+				for(int j = width-1; j >= 0; j--) {
+					int row = i;
+					while(row >= 0 && data[row][j] == 0) {
+						row--;
+						row_count++;
+					}
+					if(row_count*resolution >= dist && col_count*resolution >= dist) {
+						//send point
+						pose.x = (i%width)*resolution + origin.position.x;
+						pose.y = (ceil(i/width))*resolution + origin.position.y;
+						pose.theta = 0;
+						send.publish(pose);
+						col_count = 0;
+					} else if(data[i][j] == 0)
+						col_count++;
+					else
+						col_count = 0;
+				}
 			}
-			i++;
-			
-		}*/
+	
+		}
 		
 		ros::spinOnce();
 
