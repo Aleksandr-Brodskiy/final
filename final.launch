@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="final" type="nav" name="nav" output="screen" launch-prefix="gnome-terminal -e"/>
+  <node pkg="final" type="planner" name="planner" output="screen" launch-prefix="gnome-terminal  -e"/>
+  <node pkg="final" type="treasures" name="treasures" output="screen" launch-prefix="gnome-terminal -e"/>
+
+</launch>

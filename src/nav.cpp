@@ -23,8 +23,7 @@ void serviceActivated() {
     	ROS_INFO_STREAM("Service received goal");
 }
 
-void serviceDone(const actionlib::SimpleClientGoalState& state,
-		 const move_base_msgs::MoveBaseResultConstPtr& result) {
+void serviceDone(const actionlib::SimpleClientGoalState& state, const move_base_msgs::MoveBaseResultConstPtr& result) {
     	ROS_INFO_STREAM("Service completed");
     	ROS_INFO_STREAM("Final state " << state.toString().c_str());
 	newGoal = false;
@@ -56,6 +55,7 @@ int main(int argc,char ** argv) {
     	goal.target_pose.header.stamp = ros::Time::now();
     	goal.target_pose.pose.position.x = x;
     	goal.target_pose.pose.position.y = y;
+
 	geometry_msgs::Quaternion q;
     	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
 	goal.target_pose.pose.orientation = q;
