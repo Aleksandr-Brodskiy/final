@@ -16,7 +16,46 @@ void planReceived(const geometry_msgs::Pose2D&msg) {
         x = msg.x;
         y = msg.y;
         theta = msg.theta;
-	newGoal = true;
+	//newGoal = true;
+	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>
+	ac("move_base",true);
+	ROS_INFO_STREAM("Waiting for server to be available...");
+    	while (!ac.waitForServer()) {
+    	}
+    	//ROS_INFO_STREAM("done!");
+
+    	move_base_msgs::MoveBaseGoal goal;
+	//ros::Duration wait(30);
+
+	goal.target_pose.header.frame_id = "map";
+    	goal.target_pose.header.stamp = ros::Time::now();
+    	goal.target_pose.pose.position.x = x;
+    	goal.target_pose.pose.position.y = y;
+
+	geometry_msgs::Quaternion q;
+    	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
+	goal.target_pose.pose.orientation = q;
+    	ac.sendGoal(goal);//,&serviceDone,&serviceActivated,&serviceFeedback);
+	//wait.sleep();
+	ac.waitForResult(ros::Duration(5));
+	/*while(ros::ok()) {
+		//if(ac.waitForResult()){
+			while(!newGoal)
+				ros::spinOnce();
+		    	move_base_msgs::MoveBaseGoal goal;
+
+			goal.target_pose.header.frame_id = "map";
+		    	goal.target_pose.header.stamp = ros::Time::now();
+		    	goal.target_pose.pose.position.x = x;
+		    	goal.target_pose.pose.position.y = y;
+			geometry_msgs::Quaternion q;
+		    	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
+			goal.target_pose.pose.orientation = q;
+		    	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
+			//wait.sleep();
+			ac.waitForResult();
+	    	//} 
+	}*/
 }
 
 void serviceActivated() {
@@ -41,46 +80,7 @@ int main(int argc,char ** argv) {
         ros::NodeHandle nh;
         ros::Subscriber subPose = nh.subscribe("planner",1000,planReceived);
 
-        actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>
-	ac("move_base",true);
-	ROS_INFO_STREAM("Waiting for server to be available...");
-    	while (!ac.waitForServer()) {
-    	}
-    	ROS_INFO_STREAM("done!");
-	while(!newGoal)
-		ros::spinOnce();
-    	move_base_msgs::MoveBaseGoal goal;
-	ros::Duration wait(15);
-
-	goal.target_pose.header.frame_id = "map";
-    	goal.target_pose.header.stamp = ros::Time::now();
-    	goal.target_pose.pose.position.x = x;
-    	goal.target_pose.pose.position.y = y;
-
-	geometry_msgs::Quaternion q;
-    	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
-	goal.target_pose.pose.orientation = q;
-    	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
-	wait.sleep();
-	ac.cancelGoal();
-	while(ros::ok()) {
-		if(ac.waitForResult()){
-			while(!newGoal)
-				ros::spinOnce();
-		    	move_base_msgs::MoveBaseGoal goal;
-
-			goal.target_pose.header.frame_id = "map";
-		    	goal.target_pose.header.stamp = ros::Time::now();
-		    	goal.target_pose.pose.position.x = x;
-		    	goal.target_pose.pose.position.y = y;
-			geometry_msgs::Quaternion q;
-		    	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
-			goal.target_pose.pose.orientation = q;
-		    	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
-			wait.sleep();
-			ac.cancelGoal();
-	    	} 
-	}
+        ros::spin();
     	
     	return 0;
 
