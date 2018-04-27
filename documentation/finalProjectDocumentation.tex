@@ -34,13 +34,23 @@
 }
 {\setlength{\parindent}{0cm}
 \textbf{Documentation} \\
-\begin{center}Treasures\end{center}
-\paragraph{} \textit{to be completed upon final submission of the source code} . . . \\\\
-\begin{center}Navigation\end{center}
-\paragraph{} \textit{to be completed upon final submission of the source code} . . . \\\\
+\paragraph{} In order to produce a complete and sound solution to the task of detecting treasures along an arbitrary map, an approach was devised such that the computations performed by the robotic alogirthms would be distributed.
+  In this manner, the initial implementation of this approach involved the construction of two nodes, \textbf{\textit{nav.cpp}} and \textbf{\textit{treasures.cpp}}. Therefore the two nodes would generate functionality in tandem with each other.
+  \begin{center} \textit{further improvements are specified in the} \textbf{Design Decisions} \textit{section}. \end{center}
+  \paragraph{} The primary data structures utilized in the formulization of this distributed approach were a one dimensional array as well as a map with a \textbf{\textit{string}} type as the key and a \textbf\textit{{pose}} object as the value.
+  The simplification of storing a \textbf{\textit{pose}} object within the map was predominantly related to its dependance on the ROS structs \textit{\textbf{point}} and \textit{\textbf{quaternion}} for the computing of the translation and rotation of the robot, respectively.
+  The instantiation of the map constructor is demonstrated below with the \textbf{\textit{treasures}} label:
+  \begin{center} \textsc{std\textbf{::}map< char[], Pose > \textbf{\textit{treasures}}} \end{center}  
+  \paragraph{} Furthermore, by subscribing to the \textit{map} topic it becomes possible to retrieve data embedded in the ROS message:
+  \begin{center} \textsc{nav\_msgs/OccupancyGrid} \end{center}
+  which contains the \textsc{Header header}, \textsc{MapMetaData info} , and \textsc{int}8[] \textsc{data} fields. The \textsc{MapMetaData info} field provides information regarding the height, width, and resolution of the environment map.
+  The height, width, and resolution are defined as follows:
+  \begin{center} \textsc{uint}32[] \textsc{height} \\ \textsc{uint}32[] \textsc{width} \\ \textsc{float} 32 \textsc{resolution} \end{center}
+  With these variables, objects, and data structures . . . 
+  \\\\
 }
 {\setlength{\parindent}{0cm}
-\textbf{Design Decisions} \\
+\textbf{Design Decisions} 
 \paragraph{} \textit{to be completed upon final submission of the source code} . . . \\\\
 }
 {\setlength{\parindent}{0cm}

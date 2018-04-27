@@ -1,0 +1,6 @@
+ # Compiled LATEX PDF #
+########################
+*.log
+*.aux
+*.out
+*.vscodeLog
