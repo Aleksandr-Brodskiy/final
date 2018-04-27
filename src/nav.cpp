@@ -50,6 +50,7 @@ int main(int argc,char ** argv) {
 	while(!newGoal)
 		ros::spinOnce();
     	move_base_msgs::MoveBaseGoal goal;
+	ros::Duration wait(15);
 
 	goal.target_pose.header.frame_id = "map";
     	goal.target_pose.header.stamp = ros::Time::now();
@@ -60,7 +61,8 @@ int main(int argc,char ** argv) {
     	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
 	goal.target_pose.pose.orientation = q;
     	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
-	ac.waitForResult();
+	wait.sleep();
+	ac.cancelGoal();
 	while(ros::ok()) {
 		if(ac.waitForResult()){
 			while(!newGoal)
@@ -75,7 +77,8 @@ int main(int argc,char ** argv) {
 		    	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
 			goal.target_pose.pose.orientation = q;
 		    	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
-			ac.waitForResult();
+			wait.sleep();
+			ac.cancelGoal();
 	    	} 
 	}
     	
