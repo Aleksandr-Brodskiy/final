@@ -64,67 +64,42 @@ int main(int argc, char** argv)
 	int col_count = 0;
 	int last_row = 0;
 
-	while (ros::ok && !map) {
+	while (ros::ok && !map) { //wait for map
 		ros::spinOnce();
 	}
-		for(int i = 0; i < height; i++) {
-			if(i%2 == 0) {
-				for(int j = 0; j < width; j++) {
-					/*int row = i;
-					while(row >= 0 && data[row][j] == 0) {
-						row--;
-						row_count++;
-					}
-					if(row_count*resolution >= dist && col_count*resolution >= dist) {*/
-						//send point
-					if(clearPoint(i,j)) {
-						pose.x = j*resolution + origin.position.x;
-						pose.y = i*resolution + origin.position.y;
-						pose.theta = 0;
-						//if(last_row != i)
-							
-						//if(first) {
-						send.publish(pose);
-						ros::Rate(1).sleep();
-						first = false;
-						//}
-						ROS_INFO_STREAM("Publishing pose: " << pose);
-						j += dist/resolution;
+	for(int i = 0; i < height; i++) {
+		if(i%2 == 0) {
+			for(int j = 0; j < width; j++) {
+				if(clearPoint(i,j)) {
+					pose.x = j*resolution + origin.position.x;
+					pose.y = i*resolution + origin.position.y;
+					pose.theta = 0;
+					send.publish(pose);
+					ros::Rate(1).sleep();
+					first = false;
+					ROS_INFO_STREAM("Publishing pose: " << pose);
+					j += dist/resolution;
 
-					}
-					/*	col_count = 0;
-					} else if(data[i][j] == 0)
-						col_count++;
-					else {
-						col_count = 0;
-						row_count = 0;
-					}*/
 				}
-				i += dist/resolution;
-			} else {
-				/*for(int j = width-1; j >= 0; j--) {
-					int row = i;
-					while(row >= 0 && data[row][j] == 0) {
-						row--;
-						row_count++;
-					}
-					if(row_count*resolution >= dist && col_count*resolution >= dist) {
-						//send point
-						pose.x = (i%width)*resolution + origin.position.x;
-						pose.y = (ceil(i/width))*resolution + origin.position.y;
-						pose.theta = 0;
-						send.publish(pose);
-						col_count = 0;
-					} else if(data[i][j] == 0)
-						col_count++;
-					else
-						col_count = 0;
-				}*/
 			}
-	
+			i += dist/resolution;
+		} else {
+			for(int j = width-1; j >= 0; j--) {
+				if(clearPoint(i,j)) {
+					pose.x = j*resolution + origin.position.x;
+					pose.y = i*resolution + origin.position.y;
+					pose.theta = M_PI;
+					send.publish(pose);
+					ros::Rate(1).sleep();
+					first = false;
+					ROS_INFO_STREAM("Publishing pose: " << pose);
+					j -= dist/resolution;
+
+				}
+			}
+			i += dist/resolution;
 		}
+
+	}
 		
-
-
-	//}
 }
