@@ -11,6 +11,13 @@ float y = 0;
 float theta = 0;
 bool newGoal = false;
 
+void serviceActivated();
+void serviceDone(const actionlib::SimpleClientGoalState& state, const move_base_msgs::MoveBaseResultConstPtr& result);
+void serviceFeedback(const move_base_msgs::MoveBaseFeedbackConstPtr& fb);
+
+
+
+
 void planReceived(const geometry_msgs::Pose2D&msg) {
         ROS_INFO_STREAM("x: " << msg.x << " y: " << msg.y << " theta: " << msg.theta);
         x = msg.x;
@@ -35,9 +42,9 @@ void planReceived(const geometry_msgs::Pose2D&msg) {
 	geometry_msgs::Quaternion q;
     	tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0,0,theta), q);
 	goal.target_pose.pose.orientation = q;
-    	ac.sendGoal(goal);//,&serviceDone,&serviceActivated,&serviceFeedback);
+    	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
 	//wait.sleep();
-	ac.waitForResult(ros::Duration(5));
+	ac.waitForResult(ros::Duration(30));
 	/*while(ros::ok()) {
 		//if(ac.waitForResult()){
 			while(!newGoal)
@@ -69,10 +76,8 @@ void serviceDone(const actionlib::SimpleClientGoalState& state, const move_base_
 }
 
 void serviceFeedback(const move_base_msgs::MoveBaseFeedbackConstPtr& fb) {
-   	ROS_INFO_STREAM("Service still running");
-	ROS_INFO_STREAM("Current pose (x,y) " <<
-		    fb->base_position.pose.position.x << "," <<
-		    fb->base_position.pose.position.y);
+   	//ROS_INFO_STREAM("Service still running");
+	//ROS_INFO_STREAM("Current pose (x,y) " << fb->base_position.pose.position.x << "," << fb->base_position.pose.position.y);
 }
 
 int main(int argc,char ** argv) {
