@@ -13,7 +13,7 @@ float resolution = 0;
 geometry_msgs::Pose origin;
 
 int path_count = 0;
-int dist = 2;
+double dist = 1;
 bool first = true;
 bool map = false;
 
