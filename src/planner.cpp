@@ -20,7 +20,6 @@ bool map = false;
 
 void mapReceived(const nav_msgs::OccupancyGrid&msg) {
 
-	       
 	height = msg.info.height;
 	width = msg.info.width;
 	resolution = msg.info.resolution;
