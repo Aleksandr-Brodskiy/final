@@ -10,7 +10,7 @@ float x = 0;
 float y = 0;
 float theta = 0;
 bool newGoal = false;
-
+bool firstPoint = true;
 void serviceActivated();
 void serviceDone(const actionlib::SimpleClientGoalState& state, const move_base_msgs::MoveBaseResultConstPtr& result);
 void serviceFeedback(const move_base_msgs::MoveBaseFeedbackConstPtr& fb);
@@ -44,7 +44,11 @@ void planReceived(const geometry_msgs::Pose2D&msg) {
 	goal.target_pose.pose.orientation = q;
     	ac.sendGoal(goal,&serviceDone,&serviceActivated,&serviceFeedback);
 	//wait.sleep();
-	ac.waitForResult(ros::Duration(30));
+	if(firstPoint) {
+		ac.waitForResult(ros::Duration(45));
+		firstPoint = false;
+	} else
+		ac.waitForResult(ros::Duration(15));
 	/*while(ros::ok()) {
 		//if(ac.waitForResult()){
 			while(!newGoal)

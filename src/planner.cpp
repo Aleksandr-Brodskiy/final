@@ -13,9 +13,12 @@ float resolution = 0;
 geometry_msgs::Pose origin;
 
 int path_count = 0;
-double dist = 1;
+double x_dist = 1;
+double y_dist = 2;
+double obs_dist = 1;
 bool first = true;
 bool map = false;
+bool odd = true;
 
 
 void mapReceived(const nav_msgs::OccupancyGrid&msg) {
@@ -40,12 +43,12 @@ void mapReceived(const nav_msgs::OccupancyGrid&msg) {
 }
 
 bool clearPoint(int i, int j) {
-	if(i - dist/resolution < 0 || j - dist/resolution < 0 || i + dist/resolution > height || j + dist/resolution > width)
+	if(i - obs_dist/resolution < 0 || j - obs_dist/resolution < 0 || i + obs_dist/resolution > height || j + obs_dist/resolution > width)
 		return false;
-	for(int row = i - dist/resolution; row < i + dist/resolution; row++)
+	for(int row = i - obs_dist/resolution; row < i + obs_dist/resolution; row++)
 		if(data[row][j] != 0)
 			return false;
-	for(int col = j - dist/resolution; col < j + dist/resolution; col++)
+	for(int col = j - obs_dist/resolution; col < j + obs_dist/resolution; col++)
 		if(data[i][col] != 0)
 			return false;
 	return true;
@@ -68,21 +71,22 @@ int main(int argc, char** argv)
 		ros::spinOnce();
 	}
 	for(int i = 0; i < height; i++) {
-		if(i%2 == 0) {
+		if(odd) {
 			for(int j = 0; j < width; j++) {
 				if(clearPoint(i,j)) {
 					pose.x = j*resolution + origin.position.x;
 					pose.y = i*resolution + origin.position.y;
 					pose.theta = 0;
 					send.publish(pose);
-					ros::Rate(1).sleep();
+					//ros::Rate(1).sleep();
 					first = false;
 					ROS_INFO_STREAM("Publishing pose: " << pose);
-					j += dist/resolution;
+					j += x_dist/resolution;
 
 				}
 			}
-			i += dist/resolution;
+			i += y_dist/resolution;
+			odd = false;
 		} else {
 			for(int j = width-1; j >= 0; j--) {
 				if(clearPoint(i,j)) {
@@ -90,14 +94,14 @@ int main(int argc, char** argv)
 					pose.y = i*resolution + origin.position.y;
 					pose.theta = M_PI;
 					send.publish(pose);
-					ros::Rate(1).sleep();
+					//ros::Rate(1).sleep();
 					first = false;
 					ROS_INFO_STREAM("Publishing pose: " << pose);
-					j -= dist/resolution;
+					j -= x_dist/resolution;
 
 				}
 			}
-			i += dist/resolution;
+			i += y_dist/resolution;
 		}
 
 	}
