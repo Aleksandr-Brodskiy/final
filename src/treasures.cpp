@@ -20,10 +20,10 @@ void cameraMessageReceived(const logical_camera_plugin::logicalImage&msg) {
 		treasurePose.position.x = msg.pose_pos_x + transformStamped.transform.translation.x;
 		treasurePose.position.y = msg.pose_pos_y + transformStamped.transform.translation.y;
 		treasurePose.position.z = msg.pose_pos_z + transformStamped.transform.translation.z;
-		treasurePose.orientation.x = transformStamped.transform.rotation.x;
-		treasurePose.orientation.y = transformStamped.transform.rotation.y;
-		treasurePose.orientation.z = transformStamped.transform.rotation.z;
-		treasurePose.orientation.w = transformStamped.transform.rotation.w;
+		treasurePose.orientation.x = msg.pose_rot_x;
+		treasurePose.orientation.y = msg.pose_rot_y;
+		treasurePose.orientation.z = msg.pose_rot_z;
+		treasurePose.orientation.w = msg.pose_rot_w;
 
 		treasures[msg.modelName] = treasurePose;
                 ROS_INFO_STREAM("Found " << treasures.size() << " treasure(s)");
