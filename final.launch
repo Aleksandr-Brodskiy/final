@@ -1,7 +1,12 @@
 <?xml version="1.0"?>
 <launch>
+	<rosparam param = "move_base/TrajectoryPlannerROS/controller_frequency">10</rosparam>
+	<rosparam param = "global_costmap/inflation/inflation_radius">0.5</rosparam>
         <rosparam param = "local_costmap/inflation/inflation_radius">2</rosparam>
-        <rosparam param = "move_base/DWAPlannerROS/goal_distance_bias">30</rosparam>
+	<rosparam param = "move_base/DWAPlannerROS/max_rot_vel">0.5</rosparam>
+#        <rosparam param = "move_base/DWAPlannerROS/goal_distance_bias">30</rosparam>
+#	<rosparam param = "move_base/DWAPlannerROS/occdist_scale">0.2</rosparam>
+
   <node pkg="final" type="nav" name="nav" output="screen" launch-prefix="gnome-terminal -e"/>
   <node pkg="final" type="planner" name="planner" output="screen" launch-prefix="gnome-terminal  -e"/>
   <node pkg="final" type="treasures" name="treasures" output="screen" launch-prefix="gnome-terminal -e"/>
