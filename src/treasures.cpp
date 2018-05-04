@@ -14,6 +14,7 @@ bool foundTreasure = false;
 logical_camera_plugin::logicalImage treasure;
 geometry_msgs::TransformStamped newLocation;
 geometry_msgs::PoseWithCovarianceStamped amclLoc;
+geometry_msgs::TransformStamped transformStamped;
 
 void amcl(const geometry_msgs::PoseWithCovarianceStamped &msg){
 	amclLoc = msg;
@@ -37,12 +38,12 @@ void cameraMessageReceived(const logical_camera_plugin::logicalImage&msg) {
 			//foundTreasure = true;
 			treasure = msg;
 			//IF USING TRANSFORMATIONS
-			//treasure.pose_pos_x = msg.pose_pos_x; //+ newLocation.transform.translation.x;
-			//treasure.pose_pos_y = msg.pose_pos_y; //+ newLocation.transform.translation.y;
+			treasure.pose_pos_x = msg.pose_pos_x + transformStamped.transform.translation.x;
+			treasure.pose_pos_y = msg.pose_pos_y + transformStamped.transform.translation.y;
 
 			//IF USING AMCL
-			treasure.pose_pos_x = msg.pose_pos_x + amclLoc.pose.pose.position.x;
-                        treasure.pose_pos_y = msg.pose_pos_y + amclLoc.pose.pose.position.y;
+			//treasure.pose_pos_x = msg.pose_pos_x + amclLoc.pose.pose.position.x;
+                        //treasure.pose_pos_y = msg.pose_pos_y + amclLoc.pose.pose.position.y;
 			ROS_WARN("FOUND A TREASURE");
 			ROS_INFO_STREAM(treasure);
 			treasureArray.push_back(treasure);
@@ -63,7 +64,6 @@ int main(int argc,char **argv) {
 
         tf2_ros::Buffer buffer;
         tf2_ros::TransformListener listener(buffer);
-        geometry_msgs::TransformStamped transformStamped;
 
         ros::Subscriber amclSub = nh.subscribe("amcl_pose",1000,&amcl);
         ros::Subscriber scanSub = nh.subscribe("/objectsDetected",1000,&cameraMessageReceived);
