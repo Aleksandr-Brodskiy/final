@@ -70,7 +70,8 @@ int main(int argc, char** argv)
 		ros::spinOnce();
 	}
 	//wait for nav node
-	ros::Duration(10).sleep();
+	ros::Duration(5).sleep();
+
 	for(int i = 0; i < height; i++) {
 		if(odd) {
 			for(int j = 0; j < width; j++) {
@@ -79,11 +80,8 @@ int main(int argc, char** argv)
 					pose.y = i*resolution + origin.position.y;
 					pose.theta = 0;
 					send.publish(pose);
-					//ros::Rate(1).sleep();
-					first = false;
 					ROS_INFO_STREAM("Publishing pose: " << pose);
 					j += x_dist/resolution;
-
 				}
 			}
 			i += y_dist/resolution;
@@ -95,11 +93,8 @@ int main(int argc, char** argv)
 					pose.y = i*resolution + origin.position.y;
 					pose.theta = M_PI;
 					send.publish(pose);
-					//ros::Rate(1).sleep();
-					first = false;
 					ROS_INFO_STREAM("Publishing pose: " << pose);
 					j -= x_dist/resolution;
-
 				}
 			}
 			i += y_dist/resolution;
