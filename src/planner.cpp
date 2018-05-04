@@ -69,6 +69,8 @@ int main(int argc, char** argv)
 	while (ros::ok && !map) { //wait for map
 		ros::spinOnce();
 	}
+	//wait for nav node
+	ros::Duration(10).sleep();
 	for(int i = 0; i < height; i++) {
 		if(odd) {
 			for(int j = 0; j < width; j++) {
