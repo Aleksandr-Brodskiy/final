@@ -30,7 +30,7 @@ void cameraMessageReceived(const logical_camera_plugin::logicalImage&msg) {
 			if(treasureArray[i].modelName == msg.modelName){
 				//already exists ignore treasure
 				found = true;
-				ROS_INFO_STREAM("Treasure already found...Ignoring");
+				//ROS_INFO_STREAM("Treasure already found...Ignoring");
 			}
 		}
 		if(!found){
